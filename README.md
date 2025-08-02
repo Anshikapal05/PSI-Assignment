@@ -81,6 +81,9 @@ A full-stack task management web application where users can register, log in, m
 
 > You can set admin credentials manually in the database or use the seed admin route if implemented.
 
+Created by developer: 
+Email: admin@example.com 
+Password: Admin123
 ---
 
 ## 📁 API Documentation
