@@ -1,71 +1,4 @@
 // import React, { useEffect, useState } from "react";
-// import API from "../../api";
-
-// const TaskList = ({ reloadFlag }) => {
-//   const [tasks, setTasks] = useState([]);
-
-//   const loadTasks = async () => {
-//     try {
-//       const res = await API.get("/api/tasks");
-//       setTasks(res.data);
-//     } catch (err) {
-//       console.error("Error fetching tasks:", err);
-//     }
-//   };
-
-//   useEffect(() => {
-//     loadTasks();
-//   }, [reloadFlag]); // triggers reload
-
-//   const deleteTask = async (id) => {
-//     await API.delete(`/api/tasks/${id}`);
-//     loadTasks();
-//   };
-
-//   return (
-//     <div>
-//       <h3>Your Tasks</h3>
-//       {tasks.length === 0 ? (
-//         <p>No tasks available</p>
-//       ) : (
-//         <ul>
-//           {tasks.map((task) => (
-//             <li key={task._id}>
-//               <strong>{task.title}</strong> - {task.status} - {task.priority}
-//               <br />
-//               Due:{" "}
-//               {task.dueDate
-//                 ? new Date(task.dueDate).toLocaleDateString()
-//                 : "N/A"}
-//               <br />
-//               {task.description && <p>{task.description}</p>}
-//               {task.attachedDocuments?.length > 0 && (
-//                 <ul>
-//                   {task.attachedDocuments.map((file, idx) => (
-//                     <li key={idx}>
-//                       <a
-//                         href={`http://localhost:5000/${file}`}
-//                         target="_blank"
-//                         rel="noopener noreferrer"
-//                       >
-//                         View PDF {idx + 1}
-//                       </a>
-//                     </li>
-//                   ))}
-//                 </ul>
-//               )}
-//               <button onClick={() => deleteTask(task._id)}>Delete</button>
-//             </li>
-//           ))}
-//         </ul>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default TaskList;
-
-// import React, { useEffect, useState } from "react";
 // import axios from "axios";
 
 // const TaskList = ({ reloadFlag }) => {
@@ -154,12 +87,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
-
 const TaskList = ({ reloadFlag }) => {
   const [tasks, setTasks] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-  const loadTasks = async () => {
+  const loadTasks = async (page = 1) => {
     try {
       const userToken = localStorage.getItem("token");
 
@@ -168,31 +102,42 @@ const TaskList = ({ reloadFlag }) => {
         setIsAdmin(decoded?.role === "admin");
       }
 
-      const response = await axios.get("/api/tasks", {
+      const response = await axios.get(`/api/tasks?page=${page}`, {
         headers: { Authorization: `Bearer ${userToken}` },
       });
 
-      setTasks(response.data);
+      setTasks(response.data.tasks);
+      setCurrentPage(response.data.currentPage);
+      setTotalPages(response.data.totalPages);
     } catch (err) {
       console.error("Error fetching tasks:", err);
     }
   };
 
   useEffect(() => {
-    loadTasks();
-  }, [reloadFlag]);
+    loadTasks(currentPage);
+  }, [reloadFlag, currentPage]);
 
   const deleteTask = async (id) => {
     const userToken = localStorage.getItem("token");
     await axios.delete(`/api/tasks/${id}`, {
       headers: { Authorization: `Bearer ${userToken}` },
     });
-    loadTasks();
+    loadTasks(currentPage);
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
 
   return (
     <div className="p-6 bg-white shadow-md rounded-lg">
       <h3 className="text-2xl font-bold mb-4 text-gray-800">Your Tasks</h3>
+
       {tasks.length === 0 ? (
         <p className="text-gray-600">No tasks available</p>
       ) : (
@@ -204,9 +149,7 @@ const TaskList = ({ reloadFlag }) => {
                 <th className="py-2 px-4 border">Status</th>
                 <th className="py-2 px-4 border">Priority</th>
                 <th className="py-2 px-4 border">Due Date</th>
-                {isAdmin && (
-                  <th className="py-2 px-4 border">Assigned To</th>
-                )}
+                {isAdmin && <th className="py-2 px-4 border">Assigned To</th>}
                 <th className="py-2 px-4 border">Description</th>
                 <th className="py-2 px-4 border">Documents</th>
                 <th className="py-2 px-4 border">Action</th>
@@ -215,13 +158,9 @@ const TaskList = ({ reloadFlag }) => {
             <tbody className="text-gray-700">
               {tasks.map((task) => (
                 <tr key={task._id} className="hover:bg-gray-50">
-                  <td className="py-2 px-4 border font-semibold">
-                    {task.title}
-                  </td>
+                  <td className="py-2 px-4 border font-semibold">{task.title}</td>
                   <td className="py-2 px-4 border">{task.status}</td>
-                  <td className="py-2 px-4 border capitalize">
-                    {task.priority}
-                  </td>
+                  <td className="py-2 px-4 border capitalize">{task.priority}</td>
                   <td className="py-2 px-4 border">
                     {task.dueDate
                       ? new Date(task.dueDate).toLocaleDateString()
@@ -265,6 +204,27 @@ const TaskList = ({ reloadFlag }) => {
               ))}
             </tbody>
           </table>
+
+          {/* Pagination Controls */}
+          <div className="mt-4 flex justify-center gap-4 items-center">
+            <button
+              onClick={handlePrevPage}
+              disabled={currentPage === 1}
+              className="px-4 py-1 bg-gray-200 hover:bg-gray-300 rounded disabled:opacity-50"
+            >
+              Previous
+            </button>
+            <span className="text-gray-600">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+              className="px-4 py-1 bg-gray-200 hover:bg-gray-300 rounded disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
         </div>
       )}
     </div>
