@@ -1,57 +1,3 @@
-// import React, { useState } from "react";
-// import TaskForm from "../components/Tasks/TaskForm";
-// import TaskList from "../components/Tasks/TaskList";
-// import taskImage from "../assets/dashboard.png"; // ensure the image is in /src/assets
-
-// const Dashboard = () => {
-//   const [reloadFlag, setReloadFlag] = useState(false);
-//   const refreshTasks = () => setReloadFlag(!reloadFlag);
-
-//   return (
-//     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-6">
-//       {/* Dashboard Header */}
-//       <h2 className="text-4xl lg:text-5xl font-extrabold text-center text-blue-700 tracking-wide mb-4">
-//         <i className="fas fa-chart-line text-blue-600 mr-3"></i>
-//         Welcome to Your Dashboard
-//       </h2>
-//       <p className="text-center text-gray-600 text-lg mb-12">
-//         Manage your tasks efficiently and stay on top of your goals 🚀
-//       </p>
-
-//       {/* Grid: Illustration + Task Form */}
-//       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
-//         {/* Left - Image */}
-//         <div className="flex justify-center">
-//           <img
-//             src={taskImage}
-//             alt="Task Management Illustration"
-//             className="w-full max-w-lg "
-//           />
-//         </div>
-
-//         {/* Right - Task Form */}
-//         <div className="bg-white shadow-2xl rounded-2xl p-8">
-//           <h3 className="text-2xl font-bold text-blue-700 mb-6 flex items-center">
-//             <i className="fas fa-plus-circle mr-2 text-blue-600"></i>
-//             Add a New Task
-//           </h3>
-//           <TaskForm refreshTasks={refreshTasks} />
-//         </div>
-//       </div>
-
-//       {/* Task List Section */}
-//       <div className="max-w-6xl mx-auto bg-white shadow-xl rounded-2xl p-8">
-//         <h3 className="text-2xl font-bold text-blue-700 mb-6 flex items-center">
-//           <i className="fas fa-tasks mr-2 text-blue-600"></i>
-//           Your Tasks
-//         </h3>
-//         <TaskList reloadFlag={reloadFlag} />
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Dashboard;
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import TaskForm from "../components/Tasks/TaskForm";
@@ -122,7 +68,7 @@ const Dashboard = () => {
             <img
               src={taskImage}
               alt="Task Management Illustration"
-              className="w-full max-w-lg rounded-2xl shadow-lg"
+              className="w-full max-w-lg "
             />
           </div>
           <div className="bg-white shadow-2xl rounded-2xl p-8">

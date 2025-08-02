@@ -1,97 +1,3 @@
-// import React, { useState, useRef } from "react";
-// import API from "../../api";
-
-// const TaskForm = ({ refreshTasks }) => {
-//   const [title, setTitle] = useState("");
-//   const [description, setDescription] = useState("");
-//   const [priority, setPriority] = useState("medium");
-//   const [status, setStatus] = useState("pending");
-//   const [dueDate, setDueDate] = useState("");
-//   const [documents, setDocuments] = useState([]);
-//   const fileInputRef = useRef(null);
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-
-//     const formData = new FormData();
-//     formData.append("title", title);
-//     formData.append("description", description);
-//     formData.append("priority", priority);
-//     formData.append("status", status);
-//     formData.append("dueDate", dueDate);
-//     for (let i = 0; i < documents.length; i++) {
-//       formData.append("documents", documents[i]);
-//     }
-
-//     try {
-//       const res = await API.post("/api/tasks", formData, {
-//         headers: { "Content-Type": "multipart/form-data" },
-//       });
-
-//       console.log("Created:", res.data);
-//       // reset
-//       setTitle("");
-//       setDescription("");
-//       setPriority("medium");
-//       setStatus("pending");
-//       setDueDate("");
-//       setDocuments([]);
-//       if (fileInputRef.current) fileInputRef.current.value = "";
-//       refreshTasks();
-//     } catch (err) {
-//       console.error("Failed to create task:", err);
-//     }
-//   };
-
-//   return (
-//     <form onSubmit={handleSubmit}>
-//       <input
-//         type="text"
-//         placeholder="Task title"
-//         value={title}
-//         onChange={(e) => setTitle(e.target.value)}
-//         required
-//       />
-//       <br />
-//       <textarea
-//         placeholder="Description"
-//         value={description}
-//         onChange={(e) => setDescription(e.target.value)}
-//       />
-//       <br />
-//       <select value={priority} onChange={(e) => setPriority(e.target.value)}>
-//         <option value="low">Low</option>
-//         <option value="medium">Medium</option>
-//         <option value="high">High</option>
-//       </select>
-//       <br />
-//       <select value={status} onChange={(e) => setStatus(e.target.value)}>
-//         <option value="pending">Pending</option>
-//         <option value="in-progress">In Progress</option>
-//         <option value="completed">Completed</option>
-//       </select>
-//       <br />
-//       <input
-//         type="date"
-//         value={dueDate}
-//         onChange={(e) => setDueDate(e.target.value)}
-//       />
-//       <br />
-//       <input
-//         type="file"
-//         multiple
-//         accept="application/pdf"
-//         ref={fileInputRef}
-//         onChange={(e) => setDocuments(e.target.files)}
-//       />
-//       <br />
-//       <button type="submit">Add Task</button>
-//     </form>
-//   );
-// };
-
-// export default TaskForm;
-
 import React, { useState, useRef } from "react";
 import API from "../../api";
 
@@ -113,9 +19,10 @@ const TaskForm = ({ refreshTasks }) => {
     formData.append("priority", priority);
     formData.append("status", status);
     formData.append("dueDate", dueDate);
-    for (let i = 0; i < documents.length; i++) {
-      formData.append("documents", documents[i]);
-    }
+
+    documents.forEach((doc) => {
+      formData.append("documents", doc);
+    });
 
     try {
       const res = await API.post("/api/tasks", formData, {
@@ -123,6 +30,7 @@ const TaskForm = ({ refreshTasks }) => {
       });
 
       console.log("Created:", res.data);
+
       // reset
       setTitle("");
       setDescription("");
@@ -135,6 +43,19 @@ const TaskForm = ({ refreshTasks }) => {
     } catch (err) {
       console.error("Failed to create task:", err);
     }
+  };
+
+  const handleFileChange = (e) => {
+    const newFiles = Array.from(e.target.files);
+    setDocuments((prevDocs) => {
+      const updatedDocs = [...prevDocs, ...newFiles].slice(0, 3);
+      return updatedDocs;
+    });
+    e.target.value = ""; // reset input so user can re-select same file
+  };
+
+  const removeFile = (index) => {
+    setDocuments((prevDocs) => prevDocs.filter((_, i) => i !== index));
   };
 
   return (
@@ -163,7 +84,9 @@ const TaskForm = ({ refreshTasks }) => {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-600">Priority</label>
+          <label className="block text-sm font-medium text-gray-600">
+            Priority
+          </label>
           <select
             value={priority}
             onChange={(e) => setPriority(e.target.value)}
@@ -176,7 +99,9 @@ const TaskForm = ({ refreshTasks }) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-600">Status</label>
+          <label className="block text-sm font-medium text-gray-600">
+            Status
+          </label>
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
@@ -190,7 +115,9 @@ const TaskForm = ({ refreshTasks }) => {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-600">Due Date</label>
+        <label className="block text-sm font-medium text-gray-600">
+          Due Date
+        </label>
         <input
           type="date"
           value={dueDate}
@@ -200,15 +127,38 @@ const TaskForm = ({ refreshTasks }) => {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-600">Attach PDF Documents</label>
+        <label className="block text-sm font-medium text-gray-600">
+          Attach PDF Documents (max 3)
+        </label>
         <input
           type="file"
           multiple
           accept="application/pdf"
           ref={fileInputRef}
-          onChange={(e) => setDocuments(e.target.files)}
-          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:rounded-md file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+          onChange={handleFileChange}
+          disabled={documents.length >= 3}
+          className={`block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 
+                     file:border-0 file:rounded-md file:bg-blue-50 file:text-blue-700 
+                     hover:file:bg-blue-100 ${
+                       documents.length >= 3 ? "opacity-50 cursor-not-allowed" : ""
+                     }`}
         />
+        {documents.length > 0 && (
+          <ul className="mt-2 text-sm text-gray-700 space-y-1">
+            {documents.map((doc, idx) => (
+              <li key={idx} className="flex justify-between items-center">
+                <span>{doc.name}</span>
+                <button
+                  type="button"
+                  onClick={() => removeFile(idx)}
+                  className="text-red-600 hover:text-red-800 text-sm"
+                >
+                  Remove
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <button
