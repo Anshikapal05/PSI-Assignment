@@ -1,4 +1,4 @@
-# 📝 Task Manager App
+# 📝 Task Manager App for PanScience Innovations
 
 A full-stack task management web application where users can register, log in, manage tasks, and securely upload and download related files. Admins can view all tasks from all users with their names. The app supports authentication, pagination, file uploads/downloads, and uses Docker for containerization.
 
@@ -33,8 +33,8 @@ A full-stack task management web application where users can register, log in, m
 1. **Clone the repo:**
 
    ```bash
-   git clone https://github.com/your-username/task-manager-app.git
-   cd task-manager-app
+   git clone https://github.com/your-username/PSI-Assignment.git
+   cd PSI-Assignment
    ```
 
 2. **Setup Backend:**
@@ -42,7 +42,7 @@ A full-stack task management web application where users can register, log in, m
    ```bash
    cd backend
    npm install
-   npm run dev
+   npm start
    ```
 
 3. **Setup Frontend:**
@@ -52,12 +52,12 @@ A full-stack task management web application where users can register, log in, m
    ```bash
    cd frontend
    npm install
-   npm run dev
+   npm start
    ```
 
 4. Visit the app at:  
    ```
-   http://localhost:5173/
+   http://localhost:3000/
    ```
 
 ---
@@ -72,7 +72,7 @@ A full-stack task management web application where users can register, log in, m
 
 2. Visit the app at:  
    ```
-   http://localhost:5173/
+   http://localhost:3000/
    ```
 
 ---
@@ -104,17 +104,24 @@ A full-stack task management web application where users can register, log in, m
 ---
 
 ## 📷 Screenshots
+### Home Page
+<img width="1869" height="910" alt="image" src="https://github.com/user-attachments/assets/fd116812-042d-4d84-a429-b0c78819c064" />
 
-(Attach screenshots of: Register/Login Page, Dashboard, Admin View, Pagination, File Upload)
+### Register
+<img width="1667" height="830" alt="image" src="https://github.com/user-attachments/assets/101b683d-b1e9-4f8f-96e9-88eb29cf48b0" />
 
----
+### Login
+<img width="1563" height="726" alt="image" src="https://github.com/user-attachments/assets/a9e31214-6d59-41c9-b67a-6c88733c55cb" />
 
-## ✅ To Do (Optional Improvements)
+ ### Admin Panel
+ <img width="1899" height="913" alt="image" src="https://github.com/user-attachments/assets/b4993b50-4b73-4800-ac7c-2ed90f942df0" />
+<img width="1387" height="864" alt="image" src="https://github.com/user-attachments/assets/158f0182-d5cb-46ac-a73f-9d6802e8c1fe" />
 
-- Add sorting/filtering by due date, status
-- Add task priority levels
-- Add email notifications
-- Integrate CI/CD (GitHub Actions)
+### User Panel
+<img width="1876" height="901" alt="image" src="https://github.com/user-attachments/assets/df48a90d-7825-4a0e-85b1-c3447705ebf5" />
+<img width="1802" height="913" alt="image" src="https://github.com/user-attachments/assets/3bc3c8e4-a1ea-41e3-8f80-11f6a9a0fe95" />
+
+
 
 ---
 
