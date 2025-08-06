@@ -1,5 +1,8 @@
 # 📝 Task Manager App for PanScience Innovations
 
+## Deployed URL: 
+https://psi-assignment-client.vercel.app
+
 A full-stack task management web application where users can register, log in, manage tasks, and securely upload and download related files. Admins can view all tasks from all users with their names. The app supports authentication, pagination, file uploads/downloads, and uses Docker for containerization.
 
 ---
